@@ -5,19 +5,28 @@
   <meta charset="UTF-8">
   <title>Hiển thị thời gian ở dạng "HH:MM" với font monospace, căn giữa và fullscreen</title>
   <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+    }
+
     body {
       background-color: black;
       color: #ccc;
     }
 
+
     #clock {
       font-family: monospace;
-      font-size: 30vw;
+      font-size: 20vh;
+      font-weight: 700;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
+
 
     #fullscreen-btn {
       background-color: white;
@@ -32,25 +41,11 @@
       left: 50%;
       transform: translateX(-50%);
     }
-
-    :-webkit-full-screen {
-      background-color: white;
-    }
-
-    /* IE11 */
-    :-ms-fullscreen {
-      background-color: white;
-    }
-
-    /* Standard syntax */
-    :fullscreen {
-      background-color: white;
-    }
   </style>
 </head>
 
 <body>
-  <h1 id="clock"></h1>
+  <div id="clock"></div>
   <button id="fullscreen-btn">Fullscreen</button>
   <script>
     const clock = document.getElementById("clock");
