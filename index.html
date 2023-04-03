@@ -26,21 +26,6 @@
       align-items: center;
       height: 100vh;
     }
-
-
-    #fullscreen-btn {
-      background-color: white;
-      color: black;
-      border: 2px solid black;
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
   </style>
 </head>
 
@@ -49,16 +34,6 @@
   <button id="fullscreen-btn">Fullscreen</button>
   <script>
     const clock = document.getElementById("clock");
-    const fullscreenBtn = document.getElementById("fullscreen-btn");
-
-    // Thêm sự kiện click cho nút fullscreen
-    fullscreenBtn.addEventListener("click", () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        document.documentElement.requestFullscreen();
-      }
-    });
 
     // Thêm sự kiện keydown để bắt phím F
     document.addEventListener("keydown", (event) => {
