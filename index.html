@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hiển thị thời gian ở dạng "HH:MM" với font monospace, căn giữa và fullscreen</title>
+  <style>
+    body {
+      background-color: black;
+      color: #ccc;
+    }
+
+    #clock {
+      font-family: monospace;
+      font-size: 30vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #fullscreen-btn {
+      background-color: white;
+      color: black;
+      border: 2px solid black;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    :-webkit-full-screen {
+      background-color: white;
+    }
+
+    /* IE11 */
+    :-ms-fullscreen {
+      background-color: white;
+    }
+
+    /* Standard syntax */
+    :fullscreen {
+      background-color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id="clock"></h1>
+  <button id="fullscreen-btn">Fullscreen</button>
+  <script>
+    const clock = document.getElementById("clock");
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+
+    // Thêm sự kiện click cho nút fullscreen
+    fullscreenBtn.addEventListener("click", () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        document.documentElement.requestFullscreen();
+      }
+    });
+
+    // Thêm sự kiện keydown để bắt phím F
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "f") {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          document.documentElement.requestFullscreen();
+        }
+      }
+    });
+
+    // Cập nhật thời gian
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      clock.textContent = `${hours}${minutes}`;
+    }
+
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+
+</html>
