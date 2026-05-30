@@ -1,42 +1,181 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 
 <head>
   <meta charset="UTF-8">
-  <title>Hiển thị thời gian ở dạng "HH:MM" với font monospace, căn giữa và fullscreen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clock</title>
   <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111827;
+      --bg-accent: #1f2937;
+      --text: #e5eef7;
+      --muted: #94a3b8;
+      --clock: #f8fafc;
+      --clock-shadow: rgba(15, 23, 42, 0.35);
+      --button-bg: rgba(148, 163, 184, 0.16);
+      --button-border: rgba(148, 163, 184, 0.24);
+      --button-hover: rgba(148, 163, 184, 0.24);
+    }
+
+    body.light {
+      color-scheme: light;
+      --bg: #f4f7fb;
+      --bg-accent: #e2e8f0;
+      --text: #0f172a;
+      --muted: #475569;
+      --clock: #0f172a;
+      --clock-shadow: rgba(148, 163, 184, 0.35);
+      --button-bg: rgba(15, 23, 42, 0.06);
+      --button-border: rgba(15, 23, 42, 0.12);
+      --button-hover: rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     html,
     body {
       margin: 0;
-      height: 100%;
+      min-height: 100%;
     }
 
     body {
-      background-color: black;
-      color: #ccc;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, var(--bg-accent), transparent 45%),
+        var(--bg);
+      color: var(--text);
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
+    .app {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .toolbar {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 1;
+    }
+
+    .button {
+      border: 1px solid var(--button-border);
+      background: var(--button-bg);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .button:hover {
+      background: var(--button-hover);
+      transform: translateY(-1px);
+    }
+
+    .clock-wrap {
+      text-align: center;
+    }
+
+    .label {
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: clamp(14px, 2vw, 18px);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
 
     #clock {
-      font-family: monospace;
-      font-size: 50vh;
+      font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: clamp(88px, 28vw, 340px);
+      line-height: 0.9;
       font-weight: 700;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      letter-spacing: -0.06em;
+      color: var(--clock);
+      text-shadow: 0 14px 40px var(--clock-shadow);
+      user-select: none;
+    }
+
+    .hint {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: clamp(12px, 1.8vw, 15px);
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 20px 16px;
+      }
+
+      .toolbar {
+        top: 16px;
+        right: 16px;
+      }
+
+      .button {
+        padding: 9px 12px;
+        font-size: 13px;
+      }
+
+      #clock {
+        font-size: clamp(72px, 30vw, 180px);
+      }
     }
   </style>
 </head>
 
 <body>
-  <div id="clock"></div>
+  <main class="app">
+    <div class="toolbar">
+      <button id="themeToggle" class="button" type="button" aria-label="Chuyển giao diện sáng tối">🌙 Tối</button>
+    </div>
+
+    <section class="clock-wrap">
+      <div class="label">Bây giờ là</div>
+      <div id="clock"></div>
+      <div class="hint">Nhấn phím <strong>F</strong> để bật / tắt toàn màn hình</div>
+    </section>
+  </main>
+
   <script>
     const clock = document.getElementById("clock");
+    const themeToggle = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("theme");
 
-    // Thêm sự kiện keydown để bắt phím F
+    function applyTheme(theme) {
+      const isLight = theme === "light";
+      document.body.classList.toggle("light", isLight);
+      themeToggle.textContent = isLight ? "☀️ Sáng" : "🌙 Tối";
+      themeToggle.setAttribute(
+        "aria-label",
+        isLight ? "Chuyển sang giao diện tối" : "Chuyển sang giao diện sáng"
+      );
+      localStorage.setItem("theme", theme);
+    }
+
+    applyTheme(savedTheme || "dark");
+
+    themeToggle.addEventListener("click", () => {
+      const nextTheme = document.body.classList.contains("light") ? "dark" : "light";
+      applyTheme(nextTheme);
+    });
+
     document.addEventListener("keydown", (event) => {
-      if (event.key === "f") {
+      if (event.key.toLowerCase() === "f") {
         if (document.fullscreenElement) {
           document.exitFullscreen();
         } else {
@@ -45,12 +184,11 @@
       }
     });
 
-    // Cập nhật thời gian
     function updateTime() {
       const now = new Date();
       const hours = now.getHours().toString().padStart(2, "0");
       const minutes = now.getMinutes().toString().padStart(2, "0");
-      clock.textContent = `${hours}${minutes}`;
+      clock.textContent = `${hours}:${minutes}`;
     }
 
     updateTime();
